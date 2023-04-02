@@ -408,10 +408,16 @@
                           <div class="task-container">
                             <div class="avatar">
                               <a href="" class="rounded-circle border border-white" data-bs-toggle="modal"
-                                data-bs-target="#status_user"><i class="fas fa-square"></i></a>
+                                data-bs-target="#status_user_{{$value}}"><i class="fas fa-square"></i></a>
                             </div>
                             <a class="task-label" href="{{route('milestoneDetail', ['id1' => $projectDetail->id, 'id2' => $milestoneIdArray[$key]])}}">{{$milestoneNameArray[$key]}}</a>
                             <span class="task-action-btn task-btn-right">
+                              <span class="">
+                                <?php
+                                $milestoneInfo = App\Models\Milestone::find($value);
+                                ?>
+                                {{$milestoneInfo->milestone_status}}
+                              </span>
                               <span class="action-circle large" title="Edit">
                                 <a href="" data-bs-toggle="modal" data-bs-target="#edit_milestone-{{$milestoneIdArray[$key]}}"><i
                                     class="fa fa-user-plus"></i></a>
@@ -621,16 +627,16 @@
   </div>
 </div>
 
-
-<div id="status_user" class="modal custom-modal fade" role="dialog">
+@foreach($milestoneIdArray as $key=>$value)
+<div id="status_user_{{$value}}" class="modal custom-modal fade" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
 
       <div class="modal-body">
 
         <div>
-          <ul class="chat-user-list">
-            <li>
+          <ul class="chat-user-list milestone-status-list">
+            <li data-status="TO DO">
               <a href="#">
                 <div class="media d-flex">
                   <div class="media-body align-self-center text-nowrap">
@@ -640,7 +646,7 @@
               </a>
             </li>
 
-            <li>
+            <li data-status="IN PROGRESS">
               <a href="#">
                 <div class="media d-flex">
                   <div class="media-body align-self-center text-nowrap">
@@ -650,7 +656,7 @@
               </a>
             </li>
 
-            <li>
+            <li data-status="DONE">
               <a href="#">
                 <div class="media d-flex">
                   <div class="media-body align-self-center text-nowrap">
@@ -659,7 +665,7 @@
                 </div>
               </a>
             </li>
-            <li>
+            <li data-status="COMPLETE">
               <a href="#">
                 <div class="media d-flex">
                   <div class="media-body align-self-center text-nowrap">
@@ -675,6 +681,14 @@
     </div>
   </div>
 </div>
+@endforeach
+
+<form id="milestone-status-change" action="{{route('updateMilestoneStatus')}}" method="post">
+  @csrf
+  <input type="hidden" name="status" id="status_input">
+  <input type="hidden" name="milestone_id" id="milestone_id_input">
+  <!-- Your form fields here -->
+</form>
 
 
 <div id="edit_project" class="modal custom-modal fade" role="dialog">
@@ -839,4 +853,31 @@
 @endforeach
 
 </div>
+
+
+
+<script>
+  // Get all the list items
+  var listItems = document.querySelectorAll('.milestone-status-list li');
+
+  // Attach a click event listener to each list item
+  listItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      // Get the status value and milestone id
+      var status = item.dataset.status;
+      var milestoneId = this.closest('.modal').id.split('_')[2];
+      console.log(status, milestoneId);
+
+      // Set the value of the hidden input fields
+      document.getElementById('status_input').value = status;
+      document.getElementById('milestone_id_input').value = milestoneId;
+        
+      // Submit the form
+      document.getElementById('milestone-status-change').submit();
+    });
+  });
+</script>
+
+
+
 @endsection

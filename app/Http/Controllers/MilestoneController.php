@@ -84,5 +84,16 @@ class MilestoneController extends Controller
             
         return view('milestoneDetail', compact('milestoneDetail'));
     }
+
+    public function updateStatus(Request $request){
+       Milestone::find($request->milestone_id)->update([
+            'milestone_status' => $request->status,
+        ]);
+
+        $milestone = Milestone::find($request->milestone_id);
+        return redirect()->route('projectDetail', ['id' => $milestone->project_id]);
+
+
+    }
     
 }

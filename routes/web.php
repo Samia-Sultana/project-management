@@ -60,6 +60,9 @@ Route::post('/milestone/update', [MilestoneController::class, 'update'])->name('
 // Delete milestone
 Route::post('/milestone/delete', [MilestoneController::class, 'destroy']);
 
+Route::post('/milestone/update/status', [MilestoneController::class, 'updateStatus'])->name('updateMilestoneStatus');
+
+
 Route::get('project/{id1}/milestone/detail/{id2}', [MilestoneController::class, 'detail'])->name('milestoneDetail');
 Route::post('/assign/employee', [TaskController::class, 'assignEmployee'])->name('assignEmployee');
 
