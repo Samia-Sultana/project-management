@@ -1,0 +1,6 @@
+.kanban-cont .kanban-list1 {
+    align-self: flex-start;
+    min-width: 300px;
+    width: 1200px !important;
+    margin: 0 0px 0 0;
+  }
