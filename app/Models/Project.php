@@ -17,5 +17,6 @@ class Project extends Model
         'project_budget',
         'project_priority',
         'project_manager',
+        'project_status',
     ];
 }

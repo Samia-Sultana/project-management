@@ -417,40 +417,70 @@
                                 </td>
                                 <td>
                                     <ul class="team-members">
-
                                         <li>
                                             <a href="#" data-bs-toggle="tooltip" title="{{$item->project_manager_name}}"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
                                         </li>
                                     </ul>
                                 </td>
-                                <td>
+                                <td class="update-team">
+                                <form method="post" action="{{route('updateProjectTeam')}}">
+                                        @csrf
+                                        <input type="hidden" name="project_id" value="{{$item->id}}">
                                     <div class="dropdown action-label">
-                                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-users text-danger"></i> Team </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> Fahim</a>
-                                            <a class="dropdown-item" href="#"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> Samia</a>
+                                        <?php
+                                        $members = explode(",", $item->team_members);
+                                        $newUsers = array_filter($users, function($user) use ($members) {
+                                            return !in_array($user['id'], $members);
+                                        });
+                                        
+                                        ?>
+                                        <a href=""><i class="fa fa-users text-danger"></i>
+                                        @foreach($members as $member)
+                                        <?php
+                                        $teamMember = App\Models\User::find($member);
+                                        ?>
+                                         {{$teamMember->name}}</a>
+                                        @endforeach
+                                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
+
+                                        <div class="dropdown-menu dropdown-menu-for-team">
+                                        @foreach($newUsers as $user)
+                                            <a class="dropdown-item team-item" href="#" data-status="{{$user['id']}}"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> {{$user['name']}}</a>
+                                            @endforeach
                                         </div>
                                     </div>
+                                </form>
                                 </td>
                                 <td>{{$item->project_end_date}} </td>
-                                <td>
-                                    <div class="dropdown action-label">
-                                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-danger"></i> High</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-warning"></i> Medium</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-success"></i> Low</a>
+                                <td class="update-priority">
+                                    <form method="post" action="{{route('updateProjectPriority')}}">
+                                        @csrf
+                                        <input type="hidden" name="project_id" value="{{$item->id}}">
+                                        <div class="dropdown action-label">
+                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
+                                            <div class="dropdown-menu dropdown-menu-for-priority">
+                                                <a class="dropdown-item priority-item" href="#" data-status="High"><i class="fa fa-dot-circle-o text-danger"></i> High</a>
+                                                <a class="dropdown-item priority-item" href="#" data-status="Medium"><i class="fa fa-dot-circle-o text-warning"></i> Medium</a>
+                                                <a class="dropdown-item priority-item" href="#" data-status="Low"><i class="fa fa-dot-circle-o text-success"></i> Low</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </form>
                                 </td>
-                                <td>
-                                    <div class="dropdown action-label">
-                                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-success"></i> {{$item->project_status}} </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-success"></i> Active</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-danger"></i> Inactive</a>
+                                <td class="update-status">
+                                    <form method="post" action="{{route('updateProjectStatus')}}">
+                                        @csrf
+                                        <input type="hidden" name="project_id" value="{{$item->id}}">
+                                        <div class="dropdown action-label">
+                                            <a href="#" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-dot-circle-o text-success"></i> {{$item->project_status}}
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-for-status">
+                                                <a class="dropdown-item status-item" href="#" data-status="active"><i class="fa fa-dot-circle-o text-success"></i> Active</a>
+                                                <a class="dropdown-item status-item" href="#" data-status="inactive"><i class="fa fa-dot-circle-o text-danger"></i> Inactive</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </form>
+
                                 </td>
                                 <td class="text-end">
                                     <div class="dropdown dropdown-action">
@@ -688,9 +718,8 @@
                                         $membersName = array_column($members, 'name');
                                         ?>
 
-                                        @for($i = 0; $i< count($membersId); $i++)
-                                        <option value="{{$membersId[$i]}}" @if(in_array($item->team_members, $membersId)) selected @endif>{{$membersName[$i]}}</option>
-                                        @endfor
+                                        @for($i = 0; $i< count($membersId); $i++) <option value="{{$membersId[$i]}}" @if(in_array($item->team_members, $membersId)) selected @endif>{{$membersName[$i]}}</option>
+                                            @endfor
 
                                     </select>
                                 </div>
@@ -719,7 +748,10 @@
     </div>
 
 
-    <div class="modal custom-modal fade" id="delete_project" role="dialog">
+    <div class="modal custom-modal fade" id="delete_project_{{$item->id}}" role="dialog">
+        <form action="{{route('deleteProject')}}" method="POST" id="delete_project_form_{{$item->id}}">
+            @csrf
+            <input type="hidden" name="project_id" value="{{$item->id}}" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
@@ -730,7 +762,10 @@
                     <div class="modal-btn delete-action">
                         <div class="row">
                             <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+                            <a class="btn btn-primary continue-btn" href="#"
+                             onclick="document.getElementById('delete_project_form_{{$item->id}}').submit(); return false;">
+                              Delete
+                            </a>
                             </div>
                             <div class="col-6">
                                 <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
@@ -740,6 +775,7 @@
                 </div>
             </div>
         </div>
+        </form>
     </div>
     @endforeach
 
@@ -1043,6 +1079,81 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.querySelector('table').addEventListener('click', function(event) {
+        if (event.target.matches('.status-item')) {
+            event.preventDefault();
+
+            const status = event.target.getAttribute('data-status');
+            const form = event.target.closest('td.update-status').querySelector('form');
+            const statusInput = document.createElement('input');
+            statusInput.setAttribute('type', 'hidden');
+            statusInput.setAttribute('name', 'project_status');
+            statusInput.setAttribute('value', status);
+            form.appendChild(statusInput);
+            console.log(status, form);
+
+            form.submit();
+
+
+            // form.querySelector('input[name="project_status"]').value = status;
+            form.submit();
+        }
+    });
+</script>
+
+
+
+
+<script>
+    document.querySelector('table').addEventListener('click', function(event) {
+        if (event.target.matches('.priority-item')) {
+            event.preventDefault();
+            console.log('kiiiiiii');
+            const priority = event.target.getAttribute('data-status');
+            console.log(priority);
+
+            const form = event.target.closest('td.update-priority').querySelector('form');
+            const priorityInput = document.createElement('input');
+            priorityInput.setAttribute('type', 'hidden');
+            priorityInput.setAttribute('name', 'project_priority');
+            priorityInput.setAttribute('value', priority);
+            form.appendChild(priorityInput);
+
+
+            form.submit();
+
+
+            // form.querySelector('input[name="project_status"]').value = status;
+            form.submit();
+        }
+    });
+</script>
+
+
+<script>
+    document.querySelector('table').addEventListener('click', function(event) {
+        if (event.target.matches('.team-item')) {
+            event.preventDefault();
+            console.log('jiiiiiii');
+            const user = event.target.getAttribute('data-status');
+            console.log(user);
+
+            const form = event.target.closest('td.update-team').querySelector('form');
+            const userInput = document.createElement('input');
+            userInput.setAttribute('type', 'hidden');
+            userInput.setAttribute('name', 'user');
+            userInput.setAttribute('value', user);
+            form.appendChild(userInput);
+            form.submit();
+
+        }
+    });
+</script>
+
+
 
 
 @endsection

@@ -37,9 +37,18 @@ Route::post('/project/create', [ProjectController::class, 'store'])->name('creat
 // Update Project
 Route::post('/project/update', [ProjectController::class, 'update'])->name('updateProject');
 // Delete a project
-Route::post('/project/delete', [ProjectController::class, 'destroy']);
+Route::post('/project/delete', [ProjectController::class, 'destroy'])->name('deleteProject');
 
 Route::get('/project/detail/{id}', [ProjectController::class, 'detail'])->name('projectDetail');
+
+Route::post('/update/project/status', [ProjectController::class, 'updateStatus'])->name('updateProjectStatus');
+
+Route::post('/update/project/priority', [ProjectController::class, 'updatePriority'])->name('updateProjectPriority');
+
+Route::post('/update/project/team', [ProjectController::class, 'updateTeam'])->name('updateProjectTeam');
+
+
+
 
 
 // View all milestone

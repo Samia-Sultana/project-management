@@ -58,9 +58,9 @@ class ProjectController extends Controller
 
 
     
-        $members = DB::table('users')->select('users.id','users.name')->get()->toArray();
+        $users = User::all()->toArray();
 
-        return view('project', compact('projects','members')); 
+        return view('project', compact('projects','users')); 
     }
 
     // Update a Project
@@ -88,9 +88,41 @@ class ProjectController extends Controller
     {
         Project::where('id','=',$request->project_id)->delete();
 
-        return response()->json([
-            'success_msg' => 'Project_deleted',
+                
+        return redirect()->route('project');
+
+    }
+
+    public function updateStatus(Request $request){
+        $project = Project::find($request->project_id)->update([
+            'project_status' => $request->project_status,
         ]);
+        
+        return redirect()->route('project');
+
+
+    }
+
+
+    public function updatePriority(Request $request){
+        $project = Project::find($request->project_id)->update([
+            'project_priority' => $request->project_priority,
+        ]);
+        
+        return redirect()->route('project');
+
+
+    }
+
+    public function updateTeam(Request $request){
+        $project = ProjectTeam::where('project_id', $request->project_id)->create([
+            'project_id' => $request->project_id,
+            'user_id' => $request->user,
+        ]);
+        
+        return redirect()->route('project');
+
+
     }
 
     public function detail(Request $request, $id){
