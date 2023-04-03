@@ -581,10 +581,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Add Project Manager</label>
+                                    <?php
+                                    $users = App\Models\User::all();
+                                    ?>
                                     <select class="select" name="projectManager">
-                                        <option value="1">Apple</option>
-                                        <option value="2">Banana</option>
-                                        <option value="3">Orange</option>
+                                        @foreach($users as $user)
+                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -595,9 +598,13 @@
                                 <div class="form-group">
                                     <label>Add Team Members</label>
                                     <select multiple name="teamMembers[]" class="select">
-                                        <option value="1">Apple</option>
-                                        <option value="2">Banana</option>
-                                        <option value="3">Orange</option>
+
+                                        <?php
+                                        $users = App\Models\User::all();
+                                        ?>
+                                        @foreach($users as $user)
+                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -699,10 +706,13 @@
                                 <div class="form-group">
                                     <label>Add Project Manager</label>
                                     <select class="select" name="project_manager" value="{{$item->project_manager}}">
+                                        <?php
+                                        $users = App\Models\User::all();
+                                        ?>
                                         <option value="{{$item->project_manager}}">{{$item->project_manager_name}}</option>
-                                        <option value="apple">Apple</option>
-                                        <option value="banana">Banana</option>
-                                        <option value="orange">Orange</option>
+                                        @foreach($users as $user)
+                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -712,14 +722,19 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Add Team Members</label>
+                                  
                                     <select multiple name="teamMembers[]" class="select">
-                                        <?php
-                                        $membersId = array_column($members, 'id');
-                                        $membersName = array_column($members, 'name');
-                                        ?>
+                                      
+                                        @foreach($members as $member)
+                                                <?php
+                                                $teamMember = App\Models\User::find($member);
+                                                ?>
+                                                <option value="{{$teamMember->id}}">{{$teamMember->name}}</option>
+                                        @endforeach
+                                        @foreach($newUsers as $user)
+                                        <option value="{{$user['id']}}">{{$user['name']}}</option>
+                                        @endforeach
 
-                                        @for($i = 0; $i< count($membersId); $i++) <option value="{{$membersId[$i]}}" @if(in_array($item->team_members, $membersId)) selected @endif>{{$membersName[$i]}}</option>
-                                            @endfor
 
                                     </select>
                                 </div>
@@ -1157,43 +1172,43 @@
 
 
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
 
-  const searchBtn = document.querySelector('.btn-search');
+        const searchBtn = document.querySelector('.btn-search');
 
-  // get the input fields
-  const projectNameInput = document.querySelector('input[name="project_name"]');
-  const projectPriorityInput = document.querySelector('input[name="project_priority"]');
-  const dateInput = document.querySelector('input[name="deadline"]');
+        // get the input fields
+        const projectNameInput = document.querySelector('input[name="project_name"]');
+        const projectPriorityInput = document.querySelector('input[name="project_priority"]');
+        const dateInput = document.querySelector('input[name="deadline"]');
 
-  // get all the table rows
-  const rows = document.querySelectorAll('table tbody tr');
+        // get all the table rows
+        const rows = document.querySelectorAll('table tbody tr');
 
-  // add event listener to the search button
-  searchBtn.addEventListener('click', () => {
-    // get the input values
-    const projectName = projectNameInput.value.toLowerCase();
-    const projectPriority = projectPriorityInput.value.toLowerCase();
-    const date = dateInput.value;
+        // add event listener to the search button
+        searchBtn.addEventListener('click', () => {
+            // get the input values
+            const projectName = projectNameInput.value.toLowerCase();
+            const projectPriority = projectPriorityInput.value.toLowerCase();
+            const date = dateInput.value;
 
-    // loop through the rows and hide/show based on the input values
-    rows.forEach(row => {
-      const project = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-      const priority = row.querySelector('td.update-priority .priority-value').textContent.toLowerCase();
-      const deadline = row.querySelector('td:nth-child(5)').textContent;
-      console.log(project, priority, deadline);
+            // loop through the rows and hide/show based on the input values
+            rows.forEach(row => {
+                const project = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const priority = row.querySelector('td.update-priority .priority-value').textContent.toLowerCase();
+                const deadline = row.querySelector('td:nth-child(5)').textContent;
+                console.log(project, priority, deadline);
 
-      if ((projectName && project.includes(projectName)) || (projectPriority && priority.includes(projectPriority)) || (date && deadline.includes(date))) {
-        console.log('new');
+                if ((projectName && project.includes(projectName)) || (projectPriority && priority.includes(projectPriority)) || (date && deadline.includes(date))) {
+                    console.log('new');
 
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
     });
-  });
-
-});
 </script>
 
 
