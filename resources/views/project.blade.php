@@ -366,25 +366,25 @@
         <div class="row filter-row">
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
-                    <input type="text" class="form-control floating">
+                    <input type="text" class="form-control floating" name="project_name">
                     <label class="focus-label">Project Name</label>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
-                    <input type="text" class="form-control floating">
-                    <label class="focus-label">Project Manager Name</label>
+                    <input type="text" class="form-control floating" name="project_priority">
+                    <label class="focus-label">Priority</label>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
                 <div class="form-group">
                     <div class="cal-icon">
-                        <input class="form-control datetimepicker" type="text">
+                        <input class="form-control datetimepicker" type="text" name="deadline">
                     </div>
                 </div>
             </div>
             <div class="col-sm-6 col-md-3">
-                <a href="#" class="btn btn-success w-100"> Search </a>
+                <button class="btn btn-success w-100 btn-search"> Search </button>
             </div>
         </div>
 
@@ -423,33 +423,33 @@
                                     </ul>
                                 </td>
                                 <td class="update-team">
-                                <form method="post" action="{{route('updateProjectTeam')}}">
+                                    <form method="post" action="{{route('updateProjectTeam')}}">
                                         @csrf
                                         <input type="hidden" name="project_id" value="{{$item->id}}">
-                                    <div class="dropdown action-label">
-                                        <?php
-                                        $members = explode(",", $item->team_members);
-                                        $newUsers = array_filter($users, function($user) use ($members) {
-                                            return !in_array($user['id'], $members);
-                                        });
-                                        
-                                        ?>
-                                        <a href=""><i class="fa fa-users text-danger"></i>
-                                        @foreach($members as $member)
-                                        <?php
-                                        $teamMember = App\Models\User::find($member);
-                                        ?>
-                                         {{$teamMember->name}}</a>
-                                        @endforeach
-                                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
+                                        <div class="dropdown action-label">
+                                            <?php
+                                            $members = explode(",", $item->team_members);
+                                            $newUsers = array_filter($users, function ($user) use ($members) {
+                                                return !in_array($user['id'], $members);
+                                            });
 
-                                        <div class="dropdown-menu dropdown-menu-for-team">
-                                        @foreach($newUsers as $user)
-                                            <a class="dropdown-item team-item" href="#" data-status="{{$user['id']}}"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> {{$user['name']}}</a>
+                                            ?>
+                                            <a href=""><i class="fa fa-users text-danger"></i>
+                                                @foreach($members as $member)
+                                                <?php
+                                                $teamMember = App\Models\User::find($member);
+                                                ?>
+                                                {{$teamMember->name}}</a>
                                             @endforeach
+                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
+
+                                            <div class="dropdown-menu dropdown-menu-for-team">
+                                                @foreach($newUsers as $user)
+                                                <a class="dropdown-item team-item" href="#" data-status="{{$user['id']}}"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> {{$user['name']}}</a>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
                                 </td>
                                 <td>{{$item->project_end_date}} </td>
                                 <td class="update-priority">
@@ -457,7 +457,7 @@
                                         @csrf
                                         <input type="hidden" name="project_id" value="{{$item->id}}">
                                         <div class="dropdown action-label">
-                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
+                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle priority-value" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
                                             <div class="dropdown-menu dropdown-menu-for-priority">
                                                 <a class="dropdown-item priority-item" href="#" data-status="High"><i class="fa fa-dot-circle-o text-danger"></i> High</a>
                                                 <a class="dropdown-item priority-item" href="#" data-status="Medium"><i class="fa fa-dot-circle-o text-warning"></i> Medium</a>
@@ -751,30 +751,29 @@
     <div class="modal custom-modal fade" id="delete_project_{{$item->id}}" role="dialog">
         <form action="{{route('deleteProject')}}" method="POST" id="delete_project_form_{{$item->id}}">
             @csrf
-            <input type="hidden" name="project_id" value="{{$item->id}}" >
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Delete Project</h3>
-                        <p>Are you sure want to delete?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                            <a class="btn btn-primary continue-btn" href="#"
-                             onclick="document.getElementById('delete_project_form_{{$item->id}}').submit(); return false;">
-                              Delete
-                            </a>
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+            <input type="hidden" name="project_id" value="{{$item->id}}">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="form-header">
+                            <h3>Delete Project</h3>
+                            <p>Are you sure want to delete?</p>
+                        </div>
+                        <div class="modal-btn delete-action">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a class="btn btn-primary continue-btn" href="#" onclick="document.getElementById('delete_project_form_{{$item->id}}').submit(); return false;">
+                                        Delete
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </form>
     </div>
     @endforeach
@@ -1081,6 +1080,9 @@
 </div>
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
     document.querySelector('table').addEventListener('click', function(event) {
         if (event.target.matches('.status-item')) {
@@ -1151,6 +1153,47 @@
 
         }
     });
+</script>
+
+
+<script>
+$(document).ready(function() {
+
+  const searchBtn = document.querySelector('.btn-search');
+
+  // get the input fields
+  const projectNameInput = document.querySelector('input[name="project_name"]');
+  const projectPriorityInput = document.querySelector('input[name="project_priority"]');
+  const dateInput = document.querySelector('input[name="deadline"]');
+
+  // get all the table rows
+  const rows = document.querySelectorAll('table tbody tr');
+
+  // add event listener to the search button
+  searchBtn.addEventListener('click', () => {
+    // get the input values
+    const projectName = projectNameInput.value.toLowerCase();
+    const projectPriority = projectPriorityInput.value.toLowerCase();
+    const date = dateInput.value;
+
+    // loop through the rows and hide/show based on the input values
+    rows.forEach(row => {
+      const project = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+      const priority = row.querySelector('td.update-priority .priority-value').textContent.toLowerCase();
+      const deadline = row.querySelector('td:nth-child(5)').textContent;
+      console.log(project, priority, deadline);
+
+      if ((projectName && project.includes(projectName)) || (projectPriority && priority.includes(projectPriority)) || (date && deadline.includes(date))) {
+        console.log('new');
+
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+
+});
 </script>
 
 
