@@ -25,13 +25,16 @@
     <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css' )}}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/line-awesome.min.css' )}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css' )}}">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css' )}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css' )}}">
 
     <link rel="stylesheet" href="{{ asset('assets/plugins/morris/morris.css' )}}">
 
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css' )}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css' )}}">
+
 </head>
 
 <body class="account-page">

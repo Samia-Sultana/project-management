@@ -1,6 +1,11 @@
 @extends('master')
 @section('milestoneDetail')
 
+<?php
+
+use App\Models\User;
+
+?>
 
 
 <div class="header">
@@ -346,7 +351,7 @@
 
 <div class="page-wrapper">
 
-  <div class="content container-fluid">
+  <div class="content container">
 
     <div class="page-header">
       <div class="row">
@@ -370,12 +375,22 @@
 
 
 
+   
+
+    @foreach($milestoneDetail as $task)
+
+    <?php
+    $users = User::all()->toArray();
+    $members = explode(",", $task->user_id);
+
+    ?>
+   
+
     <div class="kanban-board card mb-0 ">
+
       <div class="card-body">
         <div class="kanban-cont">
 
-
-          @foreach($milestoneDetail as $task)
           <div class="kanban-list kanban-list1 kanban-danger">
 
             <div class="kanban-wrap">
@@ -406,20 +421,26 @@
                       </span>
                       <span class="task-users">
                         <div class="avatar-group">
-                          @php
-                          $employeeNameArray = explode(',' , $task->user_name);
-                          
-                          @endphp
-                         @foreach($employeeNameArray as $key=>$val)
-                         <div class="avatar">
-                            <img class="avatar-img rounded-circle border border-white" alt="{{$employeeNameArray[$key]}}" src="assets/img/profiles/avatar-02.jpg">
-                            
-                          </div>
 
+
+                        @foreach($members as $key=>$member)
+                          <?php
+                          $teamMember = App\Models\User::find($member);
+
+                          ?>
+
+                          <div class="avatar">
+
+                            <img class="avatar-img rounded-circle border border-white" alt="{{$teamMember->name}}" src="{{asset('assets/img/profiles/avatar-02.jpg')}}">
+
+                          </div>
                           @endforeach
+
                           <div class="avatar">
                             <a href="" class="avatar-title rounded-circle border border-white" data-bs-toggle="modal" data-bs-target="#assign_user-{{$task->task_id}}"><i class="fa fa-plus"></i></a>
-                            
+                          </div>
+                        </div>
+
                       </span>
                     </div>
                   </div>
@@ -428,13 +449,7 @@
 
 
             </div>
-
-
           </div>
-          @endforeach
-
-          
-
 
 
 
@@ -445,12 +460,12 @@
 
     </div>
 
-
-
+    @endforeach
 
 
 
   </div>
+
 
   <div id="add_task_board" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
@@ -563,21 +578,50 @@
       </div>
     </div>
   </div>
-  <div id="new_project" class="modal custom-modal fade" role="dialog">
-    <div class="modal-dialog">
+  <div id="edit_task_board" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Create New Project</h4>
+          <h4 class="modal-title">Edit Task Board</h4>
           <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <label>Project Name</label>
-              <input class="form-control" type="text">
+              <label>Task Board Name</label>
+              <input type="text" class="form-control" value="Pending">
             </div>
-            <div class="submit-section">
-              <button class="btn btn-primary submit-btn">Create Project</button>
+            <div class="form-group task-board-color">
+              <label>Task Board Color</label>
+              <div class="board-color-list">
+                <label class="board-control board-primary">
+                  <input name="radio" type="radio" class="board-control-input" value="primary" checked="">
+                  <span class="board-indicator"></span>
+                </label>
+                <label class="board-control board-success">
+                  <input name="radio" type="radio" class="board-control-input" value="success">
+                  <span class="board-indicator"></span>
+                </label>
+                <label class="board-control board-info">
+                  <input name="radio" type="radio" class="board-control-input" value="info">
+                  <span class="board-indicator"></span>
+                </label>
+                <label class="board-control board-purple">
+                  <input name="radio" type="radio" class="board-control-input" value="purple">
+                  <span class="board-indicator"></span>
+                </label>
+                <label class="board-control board-warning">
+                  <input name="radio" type="radio" class="board-control-input" value="warning">
+                  <span class="board-indicator"></span>
+                </label>
+                <label class="board-control board-danger">
+                  <input name="radio" type="radio" class="board-control-input" value="danger">
+                  <span class="board-indicator"></span>
+                </label>
+              </div>
+            </div>
+            <div class="m-t-20 text-center">
+              <button class="btn btn-primary btn-lg">Submit</button>
             </div>
           </form>
         </div>
@@ -585,70 +629,7 @@
     </div>
   </div>
 
-  <div id="assign_leader" class="modal custom-modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Assign Leader to this project</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="input-group m-b-30">
-            <input placeholder="Search to add a leader" class="form-control search-input" type="text">
-            <button class="btn btn-primary">Search</button>
-          </div>
-          <div>
-            <ul class="chat-user-list">
-              <li>
-                <a href="#">
-                  <div class="media d-flex">
-                    <span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span>
-                    <div class="media-body align-self-center text-nowrap">
-                      <div class="user-name">Richard Miles</div>
-                      <span class="designation">Web Developer</span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <div class="media d-flex">
-                    <span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-10.jpg"></span>
-                    <div class="media-body align-self-center text-nowrap">
-                      <div class="user-name">John Smith</div>
-                      <span class="designation">Android Developer</span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <div class="media d-flex">
-                    <span class="avatar flex-shrink-0">
-                      <img alt="" src="assets/img/profiles/avatar-16.jpg">
-                    </span>
-                    <div class="media-body align-self-center text-nowrap">
-                      <div class="user-name">Jeffery Lalor</div>
-                      <span class="designation">Team Leader</span>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="submit-section">
-            <button class="btn btn-primary submit-btn">Submit</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-@foreach($milestoneDetail as $task)
+  @foreach($milestoneDetail as $task)
   <div id="status_user-{{$task->task_id}}" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -661,13 +642,13 @@
         <div class="modal-body">
 
           <div>
-          <form action="{{route('updateTaskStatus')}}" method="POST">
-            @csrf
-            <input type="hidden" name="task_id" value="{{$task->task_id}}">
-            <input type="hidden" name="milestone_id" value="{{$task->id}}">
+            <form action="{{route('updateTaskStatus')}}" method="POST">
+              @csrf
+              <input type="hidden" name="task_id" value="{{$task->task_id}}">
+              <input type="hidden" name="milestone_id" value="{{$task->id}}">
 
-            <select class="select" name="status" >
-              <option value="{{$task->task_status}}">{{$task->task_status}}</option>
+              <select class="select" name="status">
+                <option value="{{$task->task_status}}">{{$task->task_status}}</option>
 
                 <option value="To do">To do</option>
                 <option value="In progress">IN PROGRESS</option>
@@ -675,10 +656,10 @@
                 <option value="Complete">COMPLETE</option>
               </select>
               <div class="submit-section">
-            <button class="btn btn-primary submit-btn" type="submit">Submit</button>
-          </div>
-              
-          </form>
+                <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+              </div>
+
+            </form>
           </div>
         </div>
       </div>
@@ -690,8 +671,7 @@
 
 
 
-
-@foreach($milestoneDetail as $task)
+  @foreach($milestoneDetail as $task)
   <div id="assign_user-{{$task->task_id}}" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -703,32 +683,31 @@
         </div>
         <div class="modal-body">
 
-        @php
-        $users = App\Models\User::all();
-        $taskEmployeeId = explode(',' , $task->user_id);
-        $taskEmployeeName = explode(',', $task->user_name);
-        @endphp
-        <form action="{{route('assignEmployee')}}" method="POST">
-          @csrf
-          <input type="hidden" name="milestone_id" value="{{$task->id}}">
-          <input type="hidden" name="task_id" value="{{$task->task_id}}">
-        <select multiple name="user_id[]" class="select">
-              @foreach($users as $user)        
-              <option value="{{$user->id}}" {{ in_array($user->id, $taskEmployeeId) ? 'selected' : '' }} >{{$user->name}}</option>        
+          @php
+          $users = App\Models\User::all();
+          $taskEmployeeId = explode(',' , $task->user_id);
+          $taskEmployeeName = explode(',', $task->user_name);
+          @endphp
+          <form action="{{route('assignEmployee')}}" method="POST">
+            @csrf
+            <input type="hidden" name="milestone_id" value="{{$task->id}}">
+            <input type="hidden" name="task_id" value="{{$task->task_id}}">
+            <select multiple name="user_id[]" class="select">
+              @foreach($users as $user)
+              <option value="{{$user->id}}" {{ in_array($user->id, $taskEmployeeId) ? 'selected' : '' }}>{{$user->name}}</option>
               @endforeach
-        </select>
+            </select>
 
-          <div class="submit-section">
-            <button class="btn btn-primary submit-btn" type="submit">Submit</button>
-          </div>
-        </form>
+            <div class="submit-section">
+              <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+            </div>
+          </form>
 
         </div>
       </div>
     </div>
   </div>
   @endforeach
-
 
   <div id="add_task_modal" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog">
@@ -846,6 +825,8 @@
   </div>
 
 </div>
+
+
 
 
 @endsection

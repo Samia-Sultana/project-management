@@ -434,12 +434,11 @@
                                             });
 
                                             ?>
-                                            <a href=""><i class="fa fa-users text-danger"></i>
                                                 @foreach($members as $member)
                                                 <?php
                                                 $teamMember = App\Models\User::find($member);
                                                 ?>
-                                                {{$teamMember->name}}</a>
+                                                <a href=""><i class="fa fa-users text-danger"></i>{{$teamMember->name}}</a>
                                             @endforeach
                                             <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
 
