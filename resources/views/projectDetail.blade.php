@@ -306,14 +306,9 @@
             </ul>
           </li>
 
-          <li class="submenu">
-            <a href="#"><i class="la la-rocket"></i> <span> Projects</span> <span class="menu-arrow"></span></a>
-            <ul style="display: none;">
-              <li><a href="{{route('project')}}">Projects</a></li>
-              <li><a href="{{route('milestone')}}">Tasks</a></li>
-              <li><a href="task-board.html">Task Board</a></li>
-            </ul>
-          </li>
+          <li><a href="{{route('project')}}">Projects</a></li>
+                <li><a href="{{route('userList')}}">User List</a></li>
+
 
         </ul>
 
@@ -330,14 +325,9 @@
           </ul>
         </li>
 
-        <li class="submenu">
-          <a href="#"><i class="la la-rocket"></i> <span> Projects</span> <span class="menu-arrow"></span></a>
-          <ul style="display: none;">
-            <li><a href="{{route('project')}}">Projects</a></li>
-            <li><a href="{{route('milestone')}}">Tasks</a></li>
-            <li><a href="task-board.html">Task Board</a></li>
-          </ul>
-        </li>
+        <li><a href="{{route('project')}}">Projects</a></li>
+                <li><a href="{{route('userList')}}">User List</a></li>
+
 
       </ul>
     </div>

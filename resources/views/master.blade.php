@@ -44,6 +44,7 @@
         @yield('project')
         @yield('projectDetail')
         @yield('milestoneDetail')
+        @yield('userList')
     </div>
 
     <script data-cfasync="false" src="{{ asset('assets/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js')}}"></script>

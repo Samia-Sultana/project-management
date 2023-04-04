@@ -4,6 +4,7 @@ use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,6 +72,10 @@ Route::post('/update/task/status', [TaskController::class, 'updateStatus'])->nam
 Route::post('/update/task', [TaskController::class, 'update'])->name('updateTask');
 
 Route::post('/delete/task', [TaskController::class, 'destroy'])->name('deleteTask');
+
+
+
+Route::get('/user/list', [UserController::class, 'index'])->name('userList');
 
 
 
