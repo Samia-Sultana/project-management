@@ -144,8 +144,8 @@ class ProjectController extends Controller
         'managers.name as project_manager_name',
         DB::raw('GROUP_CONCAT(DISTINCT milestones.id) AS milestone_id'),
         DB::raw('GROUP_CONCAT(DISTINCT milestones.milestone_name) AS milestone_name'),
-        DB::raw('GROUP_CONCAT(milestones.milestone_status) AS milestone_status'),
-        DB::raw('GROUP_CONCAT(milestones.milestone_percentage) AS milestone_percentage'),
+        DB::raw('GROUP_CONCAT(milestones.milestone_status ) AS milestone_status'),
+        DB::raw('GROUP_CONCAT(milestones.milestone_percentage ) AS milestone_percentage'),
         DB::raw('GROUP_CONCAT(DISTINCT users.id) AS user_id'),
         DB::raw('GROUP_CONCAT(DISTINCT users.name) AS user_name'),
         DB::raw('GROUP_CONCAT(DISTINCT users.email) AS user_email')

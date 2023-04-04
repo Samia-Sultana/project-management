@@ -425,8 +425,6 @@
                                             // Handle in-progress milestone
                                         }
                                     }
-                                    // $percentComplete = $numCompletedMilestones / $numMilestones * 100;
-                                    // $barColor = $percentComplete === 100 ? 'bg-success' : 'bg-info';
                                     ?>
 
 

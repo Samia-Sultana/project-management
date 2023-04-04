@@ -367,9 +367,19 @@
             <div class="pro-progress-bar">
               <h4>Progress</h4>
               <div class="progress">
+              <?php
+              $milestones = App\Models\Milestone::where('project_id',$projectDetail->id)->get();
+              $progress = 0;
+              foreach($milestones as $milestone){
+                if ($milestone->milestone_status === 'COMPLETE') {
+                  $progress += $milestone->milestone_percentage;
+              }
+              }
+
+                             ?>
                 <div class="progress-bar bg-success" role="progressbar" style="width: 20%"></div>
               </div>
-              <span>20%</span>
+              <span>{{$progress}}%</span>
             </div>
           </div>
         </div>
