@@ -68,6 +68,11 @@ Route::post('/assign/employee', [TaskController::class, 'assignEmployee'])->name
 
 Route::post('/create/task', [TaskController::class, 'create'])->name('createTask');
 Route::post('/update/task/status', [TaskController::class, 'updateStatus'])->name('updateTaskStatus');
+Route::post('/update/task', [TaskController::class, 'update'])->name('updateTask');
+
+Route::post('/delete/task', [TaskController::class, 'destroy'])->name('deleteTask');
+
+
 
 
 

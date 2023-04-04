@@ -377,7 +377,8 @@
               }
 
                              ?>
-                <div class="progress-bar bg-success" role="progressbar" style="width: 20%"></div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $progress; ?>%;"
+></div>
               </div>
               <span>{{$progress}}%</span>
             </div>

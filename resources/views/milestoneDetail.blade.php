@@ -406,8 +406,8 @@ use App\Models\User;
                         <i class="fa fa-angle-down"></i>
                       </a>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edit_task_modal">Edit</a>
-                        <a class="dropdown-item" href="#">Delete</a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edit_task_modal_{{$task->task_id}}">Edit</a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delete_project_{{$task->task_id}}"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                       </div>
                     </div>
                   </div>
@@ -431,8 +431,10 @@ use App\Models\User;
 
                           <div class="avatar">
 
-                            <img class="avatar-img rounded-circle border border-white" alt="{{$teamMember->name}}" src="{{asset('assets/img/profiles/avatar-02.jpg')}}">
+@if($teamMember)
+<img class="avatar-img rounded-circle border border-white" alt="{{$teamMember->name}}" src="{{asset('assets/img/profiles/avatar-02.jpg')}}">
 
+@endif
                           </div>
                           @endforeach
 
@@ -762,8 +764,8 @@ use App\Models\User;
     </div>
   </div>
 
-
-  <div id="edit_task_modal" class="modal custom-modal fade" role="dialog">
+@foreach($milestoneDetail as $task)
+  <div id="edit_task_modal_{{$task->task_id}}" class="modal custom-modal fade" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -771,24 +773,28 @@ use App\Models\User;
           <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-          <form>
+          <form action="{{route('updateTask')}}" method="POST">
+            @csrf
+            <input type="hidden" name="milestone_id" value="{{$task->id}}">
+
+            <input type="hidden" name="task_id" value="{{$task->task_id}}">
             <div class="form-group">
               <label>Task Name</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" name="task_name" value="{{$task->task_name}}">
             </div>
 
 
             <div class="form-group">
               <label>Start Date</label>
               <div class="cal-icon">
-                <input class="form-control datetimepicker" type="text">
+                <input class="form-control datetimepicker" type="text" name="task_start_date"  value="{{$task->task_start_date}}">
               </div>
             </div>
 
             <div class="form-group">
               <label>End Date</label>
               <div class="cal-icon">
-                <input class="form-control datetimepicker" type="text">
+                <input class="form-control datetimepicker" type="text" name="task_end_date"  value="{{$task->task_end_date}}">
               </div>
             </div>
 
@@ -796,29 +802,65 @@ use App\Models\User;
 
             <div class="form-group">
               <label>Status</label>
-              <select class="select">
-                <option>REVIEW</option>
-                <option>IN PROGRESS</option>
-                <option>COMPLETE</option>
+              <select class="select" name="task_status" >
+                <option value="{{$task->task_status}}">{{$task->task_status}}</option>
+                <option value="REVIEW">REVIEW</option>
+                <option value="IN PROGRESS">IN PROGRESS</option>
+                <option value="COMPLETE">COMPLETE</option>
               </select>
             </div>
 
             <div class="form-group">
               <label>Priority</label>
-              <select class="select">
-                <option>High</option>
-                <option>Medium</option>
-                <option>Low</option>
+              <select class="select" name="task_priority" >
+              <option value="{{$task->task_priority}}">{{$task->task_priority}}</option>
+
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
               </select>
             </div>
             <div class="submit-section text-center">
-              <button class="btn btn-primary submit-btn">Submit</button>
+              <button class="btn btn-primary submit-btn" type="submit">Submit</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   </div>
+  
+<div class="modal custom-modal fade" id="delete_project_{{$task->task_id}}" role="dialog">
+    <form action="{{route('deleteTask')}}" method="POST" id="delete_project_form_{{$task->task_id}}">
+        @csrf
+        <input type="hidden" name="task_id" value="{{$task->task_id}}">
+        <input type="hidden" name="milestone_id" value="{{$task->id}}">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-header">
+                        <h3>Delete Task</h3>
+                        <p>Are you sure want to delete?</p>
+                    </div>
+                    <div class="modal-btn delete-action">
+                        <div class="row">
+                            <div class="col-6">
+                                <a class="btn btn-primary continue-btn" href="#" onclick="document.getElementById('delete_project_form_{{$task->task_id}}').submit(); return false;">
+                                    Delete
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@endforeach
 
 </div>
 

@@ -55,9 +55,11 @@ class TaskController extends Controller
 
         $task->save();
 
-        return response()->json([
-            'success_msg' => 'Task_updated',
-        ]);
+        $milestone = Milestone::find($request->milestone_id);
+        return redirect()->route('milestoneDetail', ['id1' => $milestone->project_id , 'id2'=> $request->milestone_id]);
+       
+
+        
     }
 
    
@@ -67,9 +69,9 @@ class TaskController extends Controller
     {
         Task::where('id','=',$request->task_id)->delete();
 
-        return response()->json([
-            'success_msg' => 'Task_deleted',
-        ]);
+        $milestone = Milestone::find($request->milestone_id);
+        return redirect()->route('milestoneDetail', ['id1' => $milestone->project_id , 'id2'=> $request->milestone_id]);
+       
     }
 
     public function assignEmployee(Request $request){
@@ -98,4 +100,6 @@ class TaskController extends Controller
         return redirect()->route('milestoneDetail', ['id1' => $milestone->project_id , 'id2'=> $request->milestone_id]);
        
     }
+
+    
 }
