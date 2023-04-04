@@ -411,386 +411,408 @@
                                     <a href="{{route('projectDetail',  ['id' => $item->id ])}}">{{$item->project_name}}</a>
                                 </td>
                                 <td>
-                                    <div class="progress progress-xs mb-0">
-                                        <div class="bg-success" role="progressbar" data-bs-toggle="tooltip" title="" style="width: 40%" data-bs-original-title="40%" aria-label="40%"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <ul class="team-members">
-                                        <li>
-                                            <a href="#" data-bs-toggle="tooltip" title="{{$item->project_manager_name}}"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td class="update-team">
-                                    <form method="post" action="{{route('updateProjectTeam')}}">
-                                        @csrf
-                                        <input type="hidden" name="project_id" value="{{$item->id}}">
-                                        <div class="dropdown action-label">
-                                            <?php
-                                            $members = explode(",", $item->team_members);
-                                            $newUsers = array_filter($users, function ($user) use ($members) {
-                                                return !in_array($user['id'], $members);
-                                            });
-
-                                            ?>
-                                                @foreach($members as $member)
-                                                <?php
-                                                $teamMember = App\Models\User::find($member);
-                                                ?>
-                                                <a href=""><i class="fa fa-users text-danger"></i>{{$teamMember->name}}</a>
-                                            @endforeach
-                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
-
-                                            <div class="dropdown-menu dropdown-menu-for-team">
-                                                @foreach($newUsers as $user)
-                                                <a class="dropdown-item team-item" href="#" data-status="{{$user['id']}}"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> {{$user['name']}}</a>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td>{{$item->project_end_date}} </td>
-                                <td class="update-priority">
-                                    <form method="post" action="{{route('updateProjectPriority')}}">
-                                        @csrf
-                                        <input type="hidden" name="project_id" value="{{$item->id}}">
-                                        <div class="dropdown action-label">
-                                            <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle priority-value" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
-                                            <div class="dropdown-menu dropdown-menu-for-priority">
-                                                <a class="dropdown-item priority-item" href="#" data-status="High"><i class="fa fa-dot-circle-o text-danger"></i> High</a>
-                                                <a class="dropdown-item priority-item" href="#" data-status="Medium"><i class="fa fa-dot-circle-o text-warning"></i> Medium</a>
-                                                <a class="dropdown-item priority-item" href="#" data-status="Low"><i class="fa fa-dot-circle-o text-success"></i> Low</a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td class="update-status">
-                                    <form method="post" action="{{route('updateProjectStatus')}}">
-                                        @csrf
-                                        <input type="hidden" name="project_id" value="{{$item->id}}">
-                                        <div class="dropdown action-label">
-                                            <a href="#" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fa fa-dot-circle-o text-success"></i> {{$item->project_status}}
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-for-status">
-                                                <a class="dropdown-item status-item" href="#" data-status="active"><i class="fa fa-dot-circle-o text-success"></i> Active</a>
-                                                <a class="dropdown-item status-item" href="#" data-status="inactive"><i class="fa fa-dot-circle-o text-danger"></i> Inactive</a>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                </td>
-                                <td class="text-end">
-                                    <div class="dropdown dropdown-action">
-                                        <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edit_project_{{$item->id}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delete_project_{{$item->id}}"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                        </div>
-
-
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
+                                    <?php
+                                    $completedMilestones = explode(',', $item->milestone_status);
+                                    $percentages = explode(',', $item->milestone_percentage);
+                                    $numMilestones = count($completedMilestones);
+                                    $numCompletedMilestones = 0;
+                                    $progress = 0;
+                                    for ($i = 0; $i < $numMilestones/2; $i++) {
+                                        if ($completedMilestones[$i] === 'COMPLETE') {
+                                            $numCompletedMilestones++;
+                                            $progress += $percentages[$i];
+                                        } else {
+                                            // Handle in-progress milestone
+                                        }
+                                    }
+                                    // $percentComplete = $numCompletedMilestones / $numMilestones * 100;
+                                    // $barColor = $percentComplete === 100 ? 'bg-success' : 'bg-info';
+                                    ?>
 
 
 
-                        </tbody>
-                    </table>
-                </div>
+            <div class="progress progress-xs mb-0">
+                <div class="bg-success" role="progressbar" data-bs-toggle="tooltip" title="{{$progress}}%" style="width: 40%" data-bs-original-title="{{$progress}}%" aria-label="{{$progress}}%"></div>
             </div>
+            </td>
+            <td>
+                <ul class="team-members">
+                    <li>
+                        <a href="#" data-bs-toggle="tooltip" title="{{$item->project_manager_name}}"><img alt="" src="assets/img/profiles/avatar-16.jpg"></a>
+                    </li>
+                </ul>
+            </td>
+            <td class="update-team">
+                <form method="post" action="{{route('updateProjectTeam')}}">
+                    @csrf
+                    <input type="hidden" name="project_id" value="{{$item->id}}">
+                    <div class="dropdown action-label">
+                        <?php
+                        $members = explode(",", $item->team_members);
+                        $newUsers = array_filter($users, function ($user) use ($members) {
+                            return !in_array($user['id'], $members);
+                        });
+
+                        ?>
+                                                <i class="fa fa-users text-danger"></i>
+
+                        @foreach($members as $member)
+                        <?php
+                        $teamMember = App\Models\User::find($member);
+                        ?>
+                        <a href="">{{$teamMember->name}}</a>
+                        @endforeach
+                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> </a>
+
+                        <div class="dropdown-menu dropdown-menu-for-team">
+                            @foreach($newUsers as $user)
+                            <a class="dropdown-item team-item" href="#" data-status="{{$user['id']}}"><span class="avatar flex-shrink-0"><img alt="" src="assets/img/profiles/avatar-09.jpg"></span> {{$user['name']}}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td>{{$item->project_end_date}} </td>
+            <td class="update-priority">
+                <form method="post" action="{{route('updateProjectPriority')}}">
+                    @csrf
+                    <input type="hidden" name="project_id" value="{{$item->id}}">
+                    <div class="dropdown action-label">
+                        <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle priority-value" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-dot-circle-o text-danger"></i> {{$item->project_priority}} </a>
+                        <div class="dropdown-menu dropdown-menu-for-priority">
+                            <a class="dropdown-item priority-item" href="#" data-status="High"><i class="fa fa-dot-circle-o text-danger"></i> High</a>
+                            <a class="dropdown-item priority-item" href="#" data-status="Medium"><i class="fa fa-dot-circle-o text-warning"></i> Medium</a>
+                            <a class="dropdown-item priority-item" href="#" data-status="Low"><i class="fa fa-dot-circle-o text-success"></i> Low</a>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td class="update-status">
+                <form method="post" action="{{route('updateProjectStatus')}}">
+                    @csrf
+                    <input type="hidden" name="project_id" value="{{$item->id}}">
+                    <div class="dropdown action-label">
+                        <a href="#" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-dot-circle-o text-success"></i> {{$item->project_status}}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-for-status">
+                            <a class="dropdown-item status-item" href="#" data-status="active"><i class="fa fa-dot-circle-o text-success"></i> Active</a>
+                            <a class="dropdown-item status-item" href="#" data-status="inactive"><i class="fa fa-dot-circle-o text-danger"></i> Inactive</a>
+                        </div>
+                    </div>
+                </form>
+
+            </td>
+            <td class="text-end">
+                <div class="dropdown dropdown-action">
+                    <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edit_project_{{$item->id}}"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delete_project_{{$item->id}}"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                    </div>
+
+
+                </div>
+            </td>
+            </tr>
+            @endforeach
+
+
+
+            </tbody>
+            </table>
         </div>
     </div>
+</div>
+</div>
 
 
-    <div id="create_project" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Create Project</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{route('createProject')}}" method="POST">
-                        @csrf
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Project Name</label>
-                                    <input class="form-control" type="text" name="projectName">
+<div id="create_project" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Project</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{route('createProject')}}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Project Name</label>
+                                <input class="form-control" type="text" name="projectName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="startDate">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" name="startDate">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" name="endDate">
-                                    </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="endDate">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Budget</label>
-                                    <input class="form-control" type="text" name="budget">
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Priority</label>
-                                    <select class="select" name="priority">
-                                        <option>High</option>
-                                        <option>Medium</option>
-                                        <option>Low</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select class="select" name="status">
-                                        <option>Active</option>
-                                        <option>Inactive</option>
-                                    </select>
-                                </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Budget</label>
+                                <input class="form-control" type="text" name="budget">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Add Project Manager</label>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Priority</label>
+                                <select class="select" name="priority">
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="select" name="status">
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Add Project Manager</label>
+                                <?php
+                                $users = App\Models\User::all();
+                                ?>
+                                <select class="select" name="projectManager">
+                                    @foreach($users as $user)
+                                    <option value="{{$user->id}}">{{$user->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Add Team Members</label>
+                                <select multiple name="teamMembers[]" class="select">
+
                                     <?php
                                     $users = App\Models\User::all();
                                     ?>
-                                    <select class="select" name="projectManager">
-                                        @foreach($users as $user)
-                                        <option value="{{$user->id}}">{{$user->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Add Team Members</label>
-                                    <select multiple name="teamMembers[]" class="select">
-
-                                        <?php
-                                        $users = App\Models\User::all();
-                                        ?>
-                                        @foreach($users as $user)
-                                        <option value="{{$user->id}}">{{$user->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
-                                </div>
+                                    @foreach($users as $user)
+                                    <option value="{{$user->id}}">{{$user->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" type="submit">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    @foreach($projects as $item)
-    <div id="edit_project_{{$item->id}}" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+@foreach($projects as $item)
+<div id="edit_project_{{$item->id}}" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Project</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{route('updateProject')}}" method="POST">
+                    @csrf
+                    <input type="hidden" value="{{$item->id}}" name="project_id">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Project Name</label>
+                                <input class="form-control" type="text" name="project_name" value="{{$item->project_name}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="project_start_date" value="{{$item->project_start_date}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" name="project_end_date" value="{{$item->project_end_date}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Budget</label>
+                                <input class="form-control" type="text" name="project_budget" value="{{$item->project_budget}}">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="select" name="project_status" value="{{$item->project_status}}">
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Priority</label>
+                                <select class="select" name="project_priority" value="{{$item->project_priority}}">
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Add Project Manager</label>
+                                <select class="select" name="project_manager" value="{{$item->project_manager}}">
+                                    <?php
+                                    $users = App\Models\User::all();
+                                    ?>
+                                    <option value="{{$item->project_manager}}">{{$item->project_manager_name}}</option>
+                                    @foreach($users as $user)
+                                    <option value="{{$user->id}}">{{$user->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Add Team Members</label>
+
+                                <select multiple name="teamMembers[]" class="select">
+
+                                    @foreach($members as $member)
+                                    <?php
+                                    $teamMember = App\Models\User::find($member);
+                                    ?>
+                                    <option value="{{$teamMember->id}}">{{$teamMember->name}}</option>
+                                    @endforeach
+                                    @foreach($newUsers as $user)
+                                    <option value="{{$user['id']}}">{{$user['name']}}</option>
+                                    @endforeach
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="project_description" value="{{$item->project_description}}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal custom-modal fade" id="delete_project_{{$item->id}}" role="dialog">
+    <form action="{{route('deleteProject')}}" method="POST" id="delete_project_form_{{$item->id}}">
+        @csrf
+        <input type="hidden" name="project_id" value="{{$item->id}}">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Project</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div class="modal-body">
-                    <form action="{{route('updateProject')}}" method="POST">
-                        @csrf
-                        <input type="hidden" value="{{$item->id}}" name="project_id">
+                    <div class="form-header">
+                        <h3>Delete Project</h3>
+                        <p>Are you sure want to delete?</p>
+                    </div>
+                    <div class="modal-btn delete-action">
                         <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Project Name</label>
-                                    <input class="form-control" type="text" name="project_name" value="{{$item->project_name}}">
-                                </div>
+                            <div class="col-6">
+                                <a class="btn btn-primary continue-btn" href="#" onclick="document.getElementById('delete_project_form_{{$item->id}}').submit(); return false;">
+                                    Delete
+                                </a>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" name="project_start_date" value="{{$item->project_start_date}}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <div class="cal-icon">
-                                        <input class="form-control datetimepicker" type="text" name="project_end_date" value="{{$item->project_end_date}}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Budget</label>
-                                    <input class="form-control" type="text" name="project_budget" value="{{$item->project_budget}}">
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select class="select" name="project_status" value="{{$item->project_status}}">
-                                        <option>Active</option>
-                                        <option>Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Priority</label>
-                                    <select class="select" name="project_priority" value="{{$item->project_priority}}">
-                                        <option>High</option>
-                                        <option>Medium</option>
-                                        <option>Low</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Add Project Manager</label>
-                                    <select class="select" name="project_manager" value="{{$item->project_manager}}">
-                                        <?php
-                                        $users = App\Models\User::all();
-                                        ?>
-                                        <option value="{{$item->project_manager}}">{{$item->project_manager_name}}</option>
-                                        @foreach($users as $user)
-                                        <option value="{{$user->id}}">{{$user->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Add Team Members</label>
-                                  
-                                    <select multiple name="teamMembers[]" class="select">
-                                      
-                                        @foreach($members as $member)
-                                                <?php
-                                                $teamMember = App\Models\User::find($member);
-                                                ?>
-                                                <option value="{{$teamMember->id}}">{{$teamMember->name}}</option>
-                                        @endforeach
-                                        @foreach($newUsers as $user)
-                                        <option value="{{$user['id']}}">{{$user['name']}}</option>
-                                        @endforeach
-
-
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="project_description" value="{{$item->project_description}}"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn" type="submit">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal custom-modal fade" id="delete_project_{{$item->id}}" role="dialog">
-        <form action="{{route('deleteProject')}}" method="POST" id="delete_project_form_{{$item->id}}">
-            @csrf
-            <input type="hidden" name="project_id" value="{{$item->id}}">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="form-header">
-                            <h3>Delete Project</h3>
-                            <p>Are you sure want to delete?</p>
-                        </div>
-                        <div class="modal-btn delete-action">
-                            <div class="row">
-                                <div class="col-6">
-                                    <a class="btn btn-primary continue-btn" href="#" onclick="document.getElementById('delete_project_form_{{$item->id}}').submit(); return false;">
-                                        Delete
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
-                                </div>
+                            <div class="col-6">
+                                <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-    @endforeach
+        </div>
+    </form>
+</div>
+@endforeach
 
 </div>
 

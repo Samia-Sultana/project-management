@@ -665,11 +665,7 @@ use App\Models\User;
       </div>
     </div>
   </div>
-
   @endforeach
-
-
-
 
   @foreach($milestoneDetail as $task)
   <div id="assign_user-{{$task->task_id}}" class="modal custom-modal fade" role="dialog">
