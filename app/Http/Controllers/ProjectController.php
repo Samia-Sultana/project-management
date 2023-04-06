@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\ProjectTeam;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project as XmlProject;
 
@@ -14,6 +15,9 @@ class ProjectController extends Controller
     // Create a new project
     public function store(Request $request)
     {
+        $this->authorize('create', Project::class);
+
+
     
         // $newProject = $request->validate([
         //     'projectName' => 'required|max:255',
@@ -48,16 +52,33 @@ class ProjectController extends Controller
     // Show all projects
     public function show()
     {
-        $projects = DB::table('projects')
+        if(Auth::user()->is_admin == 1){
+
+            $projects = DB::table('projects')
         ->leftJoin('milestones', 'projects.id', "=", 'milestones.project_id')
         ->leftJoin('project_teams', 'projects.id', "=", 'project_teams.project_id')
         ->leftJoin('users', 'projects.project_manager', '=', 'users.id')
         ->select('projects.id', 'projects.project_name', 'projects.project_description', 'projects.project_start_date','projects.project_end_date','projects.project_budget','projects.project_priority','projects.project_status', 'projects.project_manager','users.name as project_manager_name', DB::raw('GROUP_CONCAT( milestones.milestone_status) AS milestone_status'), DB::raw('GROUP_CONCAT( milestones.milestone_percentage) AS milestone_percentage'), DB::raw('GROUP_CONCAT(DISTINCT project_teams.user_id) AS team_members'))
+        
         ->groupBy('projects.id', 'projects.project_name', 'projects.project_description', 'projects.project_start_date','projects.project_end_date','projects.project_budget','projects.project_priority','projects.project_status', 'projects.project_manager', 'project_manager_name')
         ->get();
 
 
-    
+        }
+
+        else{
+            $projects = DB::table('projects')
+        ->leftJoin('milestones', 'projects.id', "=", 'milestones.project_id')
+        ->leftJoin('project_teams', 'projects.id', "=", 'project_teams.project_id')
+        ->leftJoin('users', 'projects.project_manager', '=', 'users.id')
+        ->select('projects.id', 'projects.project_name', 'projects.project_description', 'projects.project_start_date','projects.project_end_date','projects.project_budget','projects.project_priority','projects.project_status', 'projects.project_manager','users.name as project_manager_name', DB::raw('GROUP_CONCAT( milestones.milestone_status) AS milestone_status'), DB::raw('GROUP_CONCAT( milestones.milestone_percentage) AS milestone_percentage'), DB::raw('GROUP_CONCAT(DISTINCT project_teams.user_id) AS team_members'))
+        ->where('projects.project_manager' , Auth::user()->id)
+        ->orWhereRaw('FIND_IN_SET(?, project_teams.user_id) > 0', [Auth::user()->id])
+        ->groupBy('projects.id', 'projects.project_name', 'projects.project_description', 'projects.project_start_date','projects.project_end_date','projects.project_budget','projects.project_priority','projects.project_status', 'projects.project_manager', 'project_manager_name')
+        ->get();
+
+        }
+
         $users = User::all()->toArray();
 
         return view('project', compact('projects','users')); 
