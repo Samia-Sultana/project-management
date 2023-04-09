@@ -332,6 +332,8 @@
                 <li><a href="{{route('project')}}">Projects</a></li>
                 <li><a href="{{route('userList')}}">User List</a></li>
 
+                <li><a href="{{route('attendance')}}">Attendance</a></li>
+
 
             </ul>
         </div>

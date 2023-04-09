@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,6 +78,11 @@ Route::post('/delete/task', [TaskController::class, 'destroy'])->name('deleteTas
 
 
 Route::get('/user/list', [UserController::class, 'index'])->name('userList');
+
+Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+Route::POST('/attendance/create', [AttendanceController::class, 'create'])->name('giveAttendance');
+
+
 
 
 
