@@ -46,6 +46,7 @@
         @yield('milestoneDetail')
         @yield('userList')
         @yield('attendance')
+        @yield('register')
 
     </div>
 
